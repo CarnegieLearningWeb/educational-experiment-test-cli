@@ -1,0 +1,27 @@
+{
+  "name": "node-typescript-webpack-starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "npm run watch:build",
+    "watch:build": "webpack --watch",
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/intercept-stdout": "^0.1.0",
+    "@types/node": "^12.12.14",
+    "@types/node-fetch": "^2.5.4",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.3",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "intercept-stdout": "^0.1.2",
+    "node-fetch": "^2.6.0"
+  }
+}
