@@ -11,7 +11,7 @@ intercept(function(txt) {
 
 const hostUrl = 'http://localhost';
 const port = '3030';
-let baseUrl = `${hostUrl}:${port}/api/`;
+let baseUrl = `https://ees-backend.herokuapp.com/api/`;
 
 interface GlobalExtended extends NodeJS.Global {
   getAllUsers: Function;
@@ -104,9 +104,13 @@ extendedGlobal.getAllExperiments = async () => {
   prettifyBuffer(result);
 };
 
+interface ISegmentDefinition {
+  id: string;
+  point: string;
+}
+
 extendedGlobal.defineExperiment = async (
-  id: string,
-  point: string,
+  segmentDefinition: ISegmentDefinition[],
   group: string,
   unitOfAssignment: string,
   consistencyRule: string,
@@ -128,14 +132,12 @@ extendedGlobal.defineExperiment = async (
         conditionCode: condition,
       };
     }),
-    segments: [
-      {
-        id,
-        point,
-        name: 'default',
-        description: '',
-      },
-    ],
+    segments: segmentDefinition.map(segmentInd => ({
+      id: segmentInd.id,
+      point: segmentInd.point,
+      name: 'default',
+      description: '',
+    })),
   });
 
   const result = await fetch(url, {

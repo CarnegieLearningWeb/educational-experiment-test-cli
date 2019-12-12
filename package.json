@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "npm run watch:build",
-    "watch:build": "webpack --watch",
+    "start": "npm run build:watch",
+    "build:watch": "webpack --watch",
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
