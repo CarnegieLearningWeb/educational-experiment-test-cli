@@ -121,10 +121,12 @@ extendedGlobal.defineExperiment = async (
   const postData = JSON.stringify({
     name: 'default',
     description: '',
+    startOn: null,
     consistencyRule,
     assignmentUnit: unitOfAssignment,
     postExperimentRule,
     state: 'inactive',
+    tags: [],
     group: group || undefined,
     conditions: conditions.map(condition => {
       return {
@@ -133,9 +135,9 @@ extendedGlobal.defineExperiment = async (
       };
     }),
     segments: segmentDefinition.map(segmentInd => ({
-      id: segmentInd.id,
+      id: `${segmentInd.id}_${segmentInd.point}`,
       point: segmentInd.point,
-      name: 'default',
+      name: segmentInd.id,
       description: '',
     })),
   });
