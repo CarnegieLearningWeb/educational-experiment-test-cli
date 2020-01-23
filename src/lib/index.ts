@@ -26,8 +26,7 @@ export enum Validation {
   NotEqual = 'notEqual',
 }
 
-// const baseUrl = `https://ees-backend.herokuapp.com/api/`;
-const baseUrl = `http://localhost:3030/api/`;
+const baseUrl = `https://ees-backend.herokuapp.com/api/`;
 
 export function defineUser_local(userId: string, userEnvironment: any): IUser {
   return {
