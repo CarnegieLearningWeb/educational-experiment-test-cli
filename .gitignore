@@ -26,6 +26,7 @@ tsconfig.build.json
 
 # Generated source-code #
 src/**/*.js
+dist
 src/**/*.js.map
 !src/public/**/*
 test/**/*.js
