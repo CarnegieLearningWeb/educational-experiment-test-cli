@@ -7,8 +7,10 @@
     "clean": "rm -rf dist",
     "start": "npm run build:watch",
     "build:watch": "webpack --watch",
-    "build": "npm run clean && webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run clean && webpack -p --display none",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "runScript": "node dist/$SCRIPT",
+    "script": "npm run build && npm run runScript"
   },
   "author": "",
   "license": "ISC",
