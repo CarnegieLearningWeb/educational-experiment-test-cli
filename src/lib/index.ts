@@ -211,11 +211,11 @@ export async function validate_local(
   switch (validation) {
     case Validation.Equal:
       return condition1 === condition2
-        ? console.log('\x1b[32m', `${validationName} Passed`)
-        : console.log('\x1b[31m', `${validationName} Failed`);
+        ? console.log('\x1b[32m', `${validationName} ======> Passed`)
+        : console.log('\x1b[31m', `${validationName} ======> Failed`);
     case Validation.NotEqual:
       return condition1 !== condition2
-        ? console.log('\x1b[32m', `${validationName} Passed`)
-        : console.log('\x1b[31m', `${validationName} Failed`);
+        ? console.log('\x1b[32m', `${validationName} ======> Passed`)
+        : console.log('\x1b[31m', `${validationName} ======> Failed`);
   }
 }

@@ -36,8 +36,8 @@ async function init() {
     [{ id: 'W2', point: 'WorkSpace' }],
     ['A', 'B'],
     ASSIGNMENT_UNIT.INDIVIDUAL,
-    CONSISTENCY_RULE.INDIVIDUAL,
-    POST_EXPERIMENT_RULE.CONTINUE
+    CONSISTENCY_RULE.EXPERIMENT,
+    POST_EXPERIMENT_RULE.REVERT
   );
 
   // ================ PREVIEW State =================
@@ -51,7 +51,7 @@ async function init() {
     'W2'
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user1);
-  
+
   validate_local(
     condition,
     'default',
@@ -82,8 +82,8 @@ async function init() {
   validate_local(
     condition,
     'default',
-    Validation.Equal,
-    '[Enrolling State] user1 is default'
+    Validation.NotEqual,
+    '[Enrolling State] user1 is not default'
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user1);
 
@@ -110,8 +110,8 @@ async function init() {
   validate_local(
     condition,
     'default',
-    Validation.NotEqual,
-    '[Enrollment Complete State] user2 is not default'
+    Validation.Equal,
+    '[Enrollment Complete State] user2 is default'
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user2);
 
