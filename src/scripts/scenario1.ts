@@ -41,7 +41,7 @@ async function init() {
   );
 
   // ================ Scheduled State =================
-  await setExperimentStatus_server(experimentName, EXPERIMENT_STATE.SCHEDULED);
+  await setExperimentStatus_server(experimentName, EXPERIMENT_STATE.PREVIEW);
 
   // ---- user 1
   await markExperimentPoint_client('WorkSpace', 'W2', user1);

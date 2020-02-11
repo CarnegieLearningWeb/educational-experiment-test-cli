@@ -826,7 +826,7 @@ duplexify@^3.4.2, duplexify@^3.6.0:
 
 ees_types@CarnegieLearningWeb/educational-experiment-types#master:
   version "1.0.0"
-  resolved "https://codeload.github.com/CarnegieLearningWeb/educational-experiment-types/tar.gz/2e83c5cb424f2ddd4cc34f9b84b95d13de21edfe"
+  resolved "https://codeload.github.com/CarnegieLearningWeb/educational-experiment-types/tar.gz/665910ea744ee6730d8fbe02a1b63c2e7263ddaf"
 
 elliptic@^6.0.0:
   version "6.5.2"

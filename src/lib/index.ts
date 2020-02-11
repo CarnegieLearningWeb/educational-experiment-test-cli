@@ -26,7 +26,7 @@ export enum Validation {
   NotEqual = 'notEqual',
 }
 
-const baseUrl = `https://ees-backend.herokuapp.com/api/`;
+const baseUrl = `http://upgrade-development.us-east-1.elasticbeanstalk.com/api/`;
 
 export function defineUser_local(userId: string, userEnvironment: any): IUser {
   return {
@@ -70,11 +70,11 @@ export async function defineExperiment_server(
     group: group || undefined,
     conditions: conditions.map(condition => {
       return {
-        assignmentWeight: 1 / conditions.length,
+        assignmentWeight: (1 / conditions.length) * 100,
         conditionCode: condition,
       };
     }),
-    segments: segmentDefinition.map(segmentInd => ({
+    partitions: segmentDefinition.map(segmentInd => ({
       id: `${segmentInd.id}_${segmentInd.point}`,
       point: segmentInd.point,
       name: segmentInd.id,
@@ -88,14 +88,18 @@ export async function defineExperiment_server(
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(res => res.json());
+  })
+    .then(res => res.json())
+    .catch(error => console.log(error));
 
   return result;
 }
 
 async function getAllExperiment() {
   const url = `${baseUrl}experiments`;
-  const result = await fetch(url).then(res => res.json());
+  const result = await fetch(url)
+    .then(res => res.json())
+    .catch(error => console.log(error));
   return result;
 }
 
@@ -119,8 +123,9 @@ export async function setExperimentStatus_server(
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(res => res.json());
-
+  })
+    .then(res => res.json())
+    .catch(error => console.log(error));
   return result;
 }
 
@@ -131,9 +136,9 @@ export async function deleteExperiment_server(name: string) {
   );
   if (experiment) {
     const url = `${baseUrl}experiments/${experiment.id}`;
-    const result = await fetch(url, { method: 'DELETE' }).then(res =>
-      res.json()
-    );
+    const result = await fetch(url, { method: 'DELETE' })
+      .then(res => res.json())
+      .catch(error => console.log(error));
     return result;
   }
 }
@@ -151,7 +156,9 @@ export async function getAllExperimentConditions_client(user: IUser) {
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(res => res.json());
+  })
+    .then(res => res.json())
+    .catch(error => console.log(error));
 
   return result;
 }
@@ -189,7 +196,9 @@ export async function markExperimentPoint_client(
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(res => res.json());
+  })
+    .then(res => res.json())
+    .catch(error => console.log(error));
   return result;
 }
 
