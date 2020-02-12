@@ -2,10 +2,10 @@
 // setUserGroup_local(userId, groupName, groupId)
 // defineExperiment_server(name, [{id, point}], [conditions], unitOfAssignment, consistencyRule, postExperimentRule, group)
 // setExperimentStatus_server(name, state)
-// getAllExperimentConditions_client(userId, userEnvironment)
+// getAllExperimentConditions_client(user)
 // getExperimentCondition_client(experimentCondition, experimentPoint, experimentId)
-// markExperimentPoint_client(userId, userEnvironment, experimentPoint, experimentId)
-// validateAssignment_local(condition1, condition2)
+// markExperimentPoint_client(experimentPoint, experimentId, user)
+// validate_local(condition1, condition2)
 // deleteExperiment_server(name)
 
 import {
@@ -26,7 +26,7 @@ export enum Validation {
   NotEqual = 'notEqual',
 }
 
-const baseUrl = `http://upgrade-development.us-east-1.elasticbeanstalk.com/api/`;
+const baseUrl = `http://localhost:3030/api/`;
 
 export function defineUser_local(userId: string, userEnvironment: any): IUser {
   return {
