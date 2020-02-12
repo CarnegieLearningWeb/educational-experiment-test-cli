@@ -19,15 +19,12 @@ Node should be installed
 ## API
 
 - **defineUser_local(userId, [{groupName, groupId}])**  
-  List all the users in the experiment system  
+  Create new user 
   `defineUser_local("1", [{"class", "1"}])`
 - **setUserGroup_local(userId, groupName, groupId)**  
-  Create new user  
-  `setUserGroup_local("1", "class", "2")`
-- **setUserGroup(userId:string, groupType:string, groupId:string)**  
   Change user group  
-  `setUserGroup("1", "class", "1")`
-- **defineExperiment_server(name, [{id, point}], [conditions], unitOfAssignment, consistencyRule, postExperimentRule, group)**  
+  `setUserGroup_local("1", "class", "2")`
+- **defineExperiment_server(name, [{id, point}], [conditions], unitOfAssignment, consistencyRule, postExperimentRule, group)** 
   Create new experiment  
   `defineExperiment_server("Experiment1", [{ id: 'W2', point: 'WorkSpace' }], ['A', 'B'], ASSIGNMENT_UNIT.INDIVIDUAL, CONSISTENCY_RULE.INDIVIDUAL, POST_EXPERIMENT_RULE.CONTINUE, 'class')`
 - **setExperimentStatus_server(name, state)**  
@@ -49,5 +46,5 @@ Node should be installed
   Validate locally condition1 and condition2  
   `validate_local('A', 'A', Validation.Equal, 'Pass')`
 - **deleteExperiment_server(name)**  
-  Delete Experiment Name  
+  Delete Experiment by name  
   `deleteExperiment_server(name)`
