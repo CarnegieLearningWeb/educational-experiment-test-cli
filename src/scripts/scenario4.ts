@@ -35,7 +35,7 @@ async function init() {
     [{ id: 'W2', point: 'WorkSpace' }],
     ['A', 'B'],
     ASSIGNMENT_UNIT.GROUP,
-    CONSISTENCY_RULE.GROUP,
+    CONSISTENCY_RULE.INDIVIDUAL,
     POST_EXPERIMENT_RULE.CONTINUE,
     'class'
   );
@@ -70,12 +70,16 @@ async function init() {
 
   // --- user 2
   let user2Conditions = await getAllExperimentConditions_client(user2);
-  condition = getExperimentCondition_client(user2Conditions, 'WorkSpace', 'W2');
+  let user2conditionEnrolling = getExperimentCondition_client(
+    user2Conditions,
+    'WorkSpace',
+    'W2'
+  );
   validate_local(
-    condition,
+    user2conditionEnrolling,
     'default',
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user2 is default`
+    Validation.NotEqual,
+    `[${experimentStateUpdate.state}] user2 is not default`
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user2);
 
@@ -129,10 +133,17 @@ async function init() {
   validate_local(
     condition,
     'default',
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user2 is default`
+    Validation.NotEqual,
+    `[${experimentStateUpdate.state}] user2 is not default`
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user2);
+
+  validate_local(
+    condition,
+    user2conditionEnrolling,
+    Validation.Equal,
+    `[${experimentStateUpdate.state}] user2 condition is same as assigned in enrolling state`
+  );
 
   // --- user 3
   user3Conditions = await getAllExperimentConditions_client(user3);

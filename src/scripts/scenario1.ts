@@ -23,8 +23,6 @@ async function init() {
   const user2 = defineUser_local('2', { class: '1' });
   const user3 = defineUser_local('3', { class: '1' });
 
-  await getAllExperimentConditions_client(user1);
-
   const experimentName = 'experiment1';
 
   // Delete experiment
@@ -41,7 +39,10 @@ async function init() {
   );
 
   // ================ PREVIEW State =================
-  await setExperimentStatus_server(experimentName, EXPERIMENT_STATE.PREVIEW);
+  let experimentStateUpdate = await setExperimentStatus_server(
+    experimentName,
+    EXPERIMENT_STATE.PREVIEW
+  );
 
   // ---- user 1
   let user1Conditions = await getAllExperimentConditions_client(user1);
@@ -51,28 +52,32 @@ async function init() {
     'W2'
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user1);
-  
+
   validate_local(
     condition,
     'default',
     Validation.Equal,
-    '[Schedule State] user1 is default'
+    `[${experimentStateUpdate.state}] user1 is default`
   );
 
   // ================ Enrolling State =================
-  const experimentState = await setExperimentStatus_server(
+  experimentStateUpdate = await setExperimentStatus_server(
     experimentName,
     EXPERIMENT_STATE.ENROLLING
   );
 
   // --- user 2
   let user2Conditions = await getAllExperimentConditions_client(user2);
-  condition = getExperimentCondition_client(user2Conditions, 'WorkSpace', 'W2');
+  let user2conditionEnrolling = getExperimentCondition_client(
+    user2Conditions,
+    'WorkSpace',
+    'W2'
+  );
   validate_local(
-    condition,
+    user2conditionEnrolling,
     'default',
     Validation.NotEqual,
-    '[Enrolling State] user2 is not default'
+    `[${experimentStateUpdate.state}] user2 is not default`
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user2);
 
@@ -83,12 +88,12 @@ async function init() {
     condition,
     'default',
     Validation.Equal,
-    '[Enrolling State] user1 is default'
+    `[${experimentStateUpdate.state}] user1 is default`
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user1);
 
   // ================ Enrollment Complete State =================
-  await setExperimentStatus_server(
+  experimentStateUpdate = await setExperimentStatus_server(
     experimentName,
     EXPERIMENT_STATE.ENROLLMENT_COMPLETE
   );
@@ -100,7 +105,7 @@ async function init() {
     condition,
     'default',
     Validation.Equal,
-    '[Enrollment Complete State] user1 is default'
+    `[${experimentStateUpdate.state}] user1 is default`
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user1);
 
@@ -111,9 +116,16 @@ async function init() {
     condition,
     'default',
     Validation.NotEqual,
-    '[Enrollment Complete State] user2 is not default'
+    `[${experimentStateUpdate.state}] user2 is not default`
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user2);
+
+  validate_local(
+    condition,
+    user2conditionEnrolling,
+    Validation.Equal,
+    `[${experimentStateUpdate.state}] user2 condition is same as assigned in enrolling state`
+  );
 
   // --- user 3
   let user3Conditions = await getAllExperimentConditions_client(user3);
@@ -122,7 +134,7 @@ async function init() {
     condition,
     'default',
     Validation.Equal,
-    '[Enrollment Complete State] user3 is default'
+    `[${experimentStateUpdate.state}] user3 is default`
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user3);
 }

@@ -126,7 +126,7 @@ export async function setExperimentStatus_server(
   })
     .then(res => res.json())
     .catch(error => console.log(error));
-  return result;
+  return result && result[0];
 }
 
 export async function deleteExperiment_server(name: string) {
