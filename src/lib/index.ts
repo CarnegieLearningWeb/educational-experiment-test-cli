@@ -28,7 +28,7 @@ export enum Validation {
   NotEqual = 'notEqual',
 }
 
-const baseUrl = `http://localhost:3030/api/`;
+const baseUrl = `http://upgrade-development.us-east-1.elasticbeanstalk.com/api/`;
 
 export async function init_client(
   userId: string,
