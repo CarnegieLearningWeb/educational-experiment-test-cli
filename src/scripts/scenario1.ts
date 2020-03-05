@@ -10,7 +10,6 @@ import {
   validate_local,
 } from '../lib/index';
 import {
-  defineUser_local,
   getAllExperimentConditions_client,
   setExperimentStatus_server,
   defineExperiment_server,

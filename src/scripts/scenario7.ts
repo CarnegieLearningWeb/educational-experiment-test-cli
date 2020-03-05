@@ -1,12 +1,15 @@
-import { Validation } from '../lib/index';
+import {
+  Validation,
+  init_client,
+  setGroupMembership_client,
+  setWorkingGroup_client,
+} from '../lib/index';
 import {
   getExperimentCondition_client,
   deleteExperiment_server,
   validate_local,
-  setUserGroup_local,
 } from '../lib/index';
 import {
-  defineUser_local,
   getAllExperimentConditions_client,
   setExperimentStatus_server,
   defineExperiment_server,
@@ -20,10 +23,31 @@ import {
 } from 'ees_types';
 
 async function init() {
-  let user1 = defineUser_local('1', { class: '2' });
-  const user2 = defineUser_local('2', { class: '1' });
-  const user3 = defineUser_local('3', { class: '2' });
-  const user4 = defineUser_local('4', { class: '2' });
+  // creating user
+  await init_client('1');
+  await init_client('2');
+  await init_client('3');
+  await init_client('4');
+
+  // creating group
+  await setGroupMembership_client('1', {
+    class: ['1', '2'],
+  });
+  await setGroupMembership_client('2', {
+    class: ['1', '2'],
+  });
+  await setGroupMembership_client('3', {
+    class: ['1', '2'],
+  });
+  await setGroupMembership_client('4', {
+    class: ['1', '2'],
+  });
+
+  // creating working group
+  let user1 = await setWorkingGroup_client('1', { class: '2' });
+  const user2 = await setWorkingGroup_client('2', { class: '1' });
+  const user3 = await setWorkingGroup_client('3', { class: '2' });
+  const user4 = await setWorkingGroup_client('4', { class: '2' });
 
   const experimentName = 'experiment1';
 
@@ -57,7 +81,7 @@ async function init() {
   await markExperimentPoint_client('WorkSpace', 'W2', user1);
 
   // Changing Group of user1
-  user1 = setUserGroup_local(user1, 'class', '1');
+  user1 = await setWorkingGroup_client('1', { class: '1' });
 
   validate_local(
     condition,

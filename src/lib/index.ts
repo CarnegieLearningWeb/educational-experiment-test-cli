@@ -1,8 +1,6 @@
 // init_client(userId, group, workingGroup)
 // setGroupMembership_client(userId, group)
 // setWorkingGroup_client(userId, workingGroup)
-
-// setUserGroup_local(userId, groupName, groupId)
 // defineExperiment_server(name, [{id, point}], [conditions], unitOfAssignment, consistencyRule, postExperimentRule, group)
 // setExperimentStatus_server(name, state)
 // getAllExperimentConditions_client(user)
@@ -32,19 +30,17 @@ export enum Validation {
 
 const baseUrl = `http://localhost:3030/api/`;
 
-export function defineUser_local(userId: string, userEnvironment: any): IUser {
-  return {
-    id: userId,
-    group: userEnvironment,
-    workingGroup: userEnvironment,
-  };
-}
-
-export async function init_client(userId: string): Promise<IUser> {
+export async function init_client(
+  userId: string,
+  group?: any,
+  workingGroup?: any
+): Promise<IUser> {
   const url = `${baseUrl}experimentusers`;
   const postData = JSON.stringify([
     {
       id: userId,
+      group: group || {},
+      workingGroup: workingGroup || {},
     },
   ]);
 
@@ -105,15 +101,6 @@ export async function setWorkingGroup_client(
     .catch(error => console.log(error));
 
   return result;
-}
-
-export function setUserGroup_local(
-  userDef: IUser,
-  groupName: string,
-  groupId: string
-): IUser {
-  userDef.group[groupName] = groupId;
-  return userDef;
 }
 
 interface ISegmentDefinition {
