@@ -31,23 +31,23 @@ async function init() {
 
   // creating group
   await setGroupMembership_client('1', {
-    class: ['2'],
+    class: ['1'],
   });
   await setGroupMembership_client('2', {
-    class: ['1'],
+    class: ['2'],
   });
   await setGroupMembership_client('3', {
     class: ['2'],
   });
   await setGroupMembership_client('4', {
-    class: ['2'],
+    class: ['1'],
   });
 
   // creating working group
-  let user1 = await setWorkingGroup_client('1', { class: '2' });
-  const user2 = await setWorkingGroup_client('2', { class: '1' });
+  let user1 = await setWorkingGroup_client('1', { class: '1' });
+  const user2 = await setWorkingGroup_client('2', { class: '2' });
   const user3 = await setWorkingGroup_client('3', { class: '2' });
-  const user4 = await setWorkingGroup_client('4', { class: '2' });
+  const user4 = await setWorkingGroup_client('4', { class: '1' });
 
   const experimentName = 'experiment1';
 
@@ -60,116 +60,34 @@ async function init() {
     [{ id: 'W2', point: 'WorkSpace' }],
     ['A', 'B'],
     ASSIGNMENT_UNIT.GROUP,
-    CONSISTENCY_RULE.GROUP,
+    CONSISTENCY_RULE.INDIVIDUAL,
     POST_EXPERIMENT_RULE.CONTINUE,
     'class'
   );
 
-  // ================ INACTIVE State =================
-  let experimentStateUpdate = await setExperimentStatus_server(
-    experimentName,
-    EXPERIMENT_STATE.INACTIVE
-  );
-
-  // ---- user 1
-  let user1Conditions = await getAllExperimentConditions_client(user1);
-  let condition = getExperimentCondition_client(
-    user1Conditions,
-    'WorkSpace',
-    'W2'
-  );
-  await markExperimentPoint_client('WorkSpace', 'W2', user1);
-
-  await setGroupMembership_client('1', {
-    class: ['1'],
-  });
-
-  // Changing Group of user1
-  user1 = await setWorkingGroup_client('1', { class: '1' });
-
-  validate_local(
-    user1.group.class[0],
-    '1',
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user3 group for class is changed to 2`
-  );
-
-  validate_local(
-    user1.workingGroup.class,
-    '1',
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user3 working group for class is changed to 2`
-  );
-
-  validate_local(
-    condition,
-    'default',
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user1 is default`
-  );
-
-  // ================ PREVIEW State =================
-  experimentStateUpdate = await setExperimentStatus_server(
-    experimentName,
-    EXPERIMENT_STATE.PREVIEW
-  );
-
-  // ---- user 1
-  user1Conditions = await getAllExperimentConditions_client(user1);
-  condition = getExperimentCondition_client(user1Conditions, 'WorkSpace', 'W2');
-  await markExperimentPoint_client('WorkSpace', 'W2', user1);
-
-  validate_local(
-    condition,
-    'default',
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user1 is default`
-  );
-
   // ================ Enrolling State =================
-  experimentStateUpdate = await setExperimentStatus_server(
+  let experimentStateUpdate = await setExperimentStatus_server(
     experimentName,
     EXPERIMENT_STATE.ENROLLING
   );
 
-  // --- user 2
-  let user2Conditions = await getAllExperimentConditions_client(user2);
-  let user2conditionEnrolling = getExperimentCondition_client(
-    user2Conditions,
-    'WorkSpace',
-    'W2'
-  );
-  validate_local(
-    user2conditionEnrolling,
-    'default',
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user2 is default`
-  );
-  await markExperimentPoint_client('WorkSpace', 'W2', user2);
-
   // ---- user 1
-  user1Conditions = await getAllExperimentConditions_client(user1);
-  let user1conditionEnrolling = getExperimentCondition_client(
+  let user1Conditions = await getAllExperimentConditions_client(user1);
+  let user1OldAssignedConditionEnrolling = getExperimentCondition_client(
     user1Conditions,
     'WorkSpace',
     'W2'
   );
-  validate_local(
-    user1conditionEnrolling,
-    'default',
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user1 is default`
-  );
   await markExperimentPoint_client('WorkSpace', 'W2', user1);
 
   validate_local(
-    user1conditionEnrolling,
-    user2conditionEnrolling,
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user2 condition is same as assigned to user1`
+    user1OldAssignedConditionEnrolling,
+    'default',
+    Validation.NotEqual,
+    `[${experimentStateUpdate.state}] user1 is not default`
   );
 
-  // ---- user 3
+  // --- user 3
   let user3Conditions = await getAllExperimentConditions_client(user3);
   let user3conditionEnrolling = getExperimentCondition_client(
     user3Conditions,
@@ -182,7 +100,56 @@ async function init() {
     Validation.NotEqual,
     `[${experimentStateUpdate.state}] user3 is not default`
   );
+  await markExperimentPoint_client('WorkSpace', 'W2', user3);
 
+  // ----- user1 group change
+  await setGroupMembership_client('1', {
+    class: ['2'],
+  });
+  user1 = await setWorkingGroup_client('1', { class: '2' });
+
+  validate_local(
+    user1.workingGroup.class,
+    '2',
+    Validation.Equal,
+    `[${experimentStateUpdate.state}] user3 working group for class is changed to 2`
+  );
+
+  user1Conditions = await getAllExperimentConditions_client(user1);
+  let condition = getExperimentCondition_client(
+    user1Conditions,
+    'WorkSpace',
+    'W2'
+  );
+  await markExperimentPoint_client('WorkSpace', 'W2', user1);
+
+  validate_local(
+    condition,
+    'default',
+    Validation.NotEqual,
+    `[${experimentStateUpdate.state}] user1 is not default`
+  );
+
+  validate_local(
+    condition,
+    user1OldAssignedConditionEnrolling,
+    Validation.Equal,
+    `[${experimentStateUpdate.state}] user1 condition is same as user1 old condition`
+  );
+
+  // ------- user 2
+  let user2Conditions = await getAllExperimentConditions_client(user2);
+  let user2conditionEnrolling = getExperimentCondition_client(
+    user2Conditions,
+    'WorkSpace',
+    'W2'
+  );
+  validate_local(
+    user2conditionEnrolling,
+    user3conditionEnrolling,
+    Validation.Equal,
+    `[${experimentStateUpdate.state}] user2 is same as user3 assigned condition`
+  );
   await markExperimentPoint_client('WorkSpace', 'W2', user3);
 
   //   ================ Enrollment Complete State =================
@@ -201,16 +168,16 @@ async function init() {
   validate_local(
     user1conditionEnrolmentComplete,
     'default',
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user1 is default`
+    Validation.NotEqual,
+    `[${experimentStateUpdate.state}] user1 is not default`
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user1);
 
   validate_local(
     user1conditionEnrolmentComplete,
-    user1conditionEnrolling,
+    user1OldAssignedConditionEnrolling,
     Validation.Equal,
-    `[${experimentStateUpdate.state}] user1 condition is same as assigned in enrolling state`
+    `[${experimentStateUpdate.state}] user1 condition is same as user 1 old condition during enrolling`
   );
 
   // --- user 2
@@ -223,8 +190,8 @@ async function init() {
   validate_local(
     user2conditionEnrolmentComplete,
     'default',
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user2 is default`
+    Validation.NotEqual,
+    `[${experimentStateUpdate.state}] user2 is not default`
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user2);
 
@@ -233,13 +200,6 @@ async function init() {
     user2conditionEnrolling,
     Validation.Equal,
     `[${experimentStateUpdate.state}] user2 condition is same as assigned in enrolling state`
-  );
-
-  validate_local(
-    user1conditionEnrolmentComplete,
-    user2conditionEnrolmentComplete,
-    Validation.Equal,
-    `[${experimentStateUpdate.state}] user2 condition is same as assigned to user1`
   );
 
   // --- user 3
@@ -271,9 +231,9 @@ async function init() {
   );
   validate_local(
     condition,
-    user3conditionEnrolling,
+    user1OldAssignedConditionEnrolling,
     Validation.Equal,
-    `[${experimentStateUpdate.state}] user4 condition is same as assigned in enrolling state to user 3`
+    `[${experimentStateUpdate.state}] user4 condition is same as assigned user1 for the first time when his group was 1`
   );
   await markExperimentPoint_client('WorkSpace', 'W2', user4);
 }
