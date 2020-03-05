@@ -1,4 +1,7 @@
-// defineUser_local(userId, [{groupName, groupId}])
+// init_client(userId, group, workingGroup)
+// setGroupMembership_client(userId, group)
+// setWorkingGroup_client(userId, workingGroup)
+
 // setUserGroup_local(userId, groupName, groupId)
 // defineExperiment_server(name, [{id, point}], [conditions], unitOfAssignment, consistencyRule, postExperimentRule, group)
 // setExperimentStatus_server(name, state)
@@ -19,6 +22,7 @@ import fetch from 'node-fetch';
 interface IUser {
   id: string;
   group: any;
+  workingGroup: any;
 }
 
 export enum Validation {
@@ -32,7 +36,75 @@ export function defineUser_local(userId: string, userEnvironment: any): IUser {
   return {
     id: userId,
     group: userEnvironment,
+    workingGroup: userEnvironment,
   };
+}
+
+export async function init_client(userId: string): Promise<IUser> {
+  const url = `${baseUrl}experimentusers`;
+  const postData = JSON.stringify([
+    {
+      id: userId,
+    },
+  ]);
+
+  const result: IUser[] = await fetch(url, {
+    method: 'POST',
+    body: postData,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.json())
+    .catch(error => console.log(error));
+
+  return result[0];
+}
+
+export async function setGroupMembership_client(
+  userId: string,
+  group: any
+): Promise<IUser> {
+  const url = `${baseUrl}groupmembership`;
+  const postData = JSON.stringify({
+    id: userId,
+    group,
+  });
+
+  const result: IUser = await fetch(url, {
+    method: 'POST',
+    body: postData,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.json())
+    .catch(error => console.log(error));
+
+  return result;
+}
+
+export async function setWorkingGroup_client(
+  userId: string,
+  workingGroup: any
+): Promise<IUser> {
+  const url = `${baseUrl}workinggroup`;
+  const postData = JSON.stringify({
+    id: userId,
+    workingGroup,
+  });
+
+  const result: IUser = await fetch(url, {
+    method: 'POST',
+    body: postData,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(res => res.json())
+    .catch(error => console.log(error));
+
+  return result;
 }
 
 export function setUserGroup_local(
@@ -68,17 +140,19 @@ export async function defineExperiment_server(
     state: 'inactive',
     tags: [],
     group: group || undefined,
-    conditions: conditions.map(condition => {
+    conditions: conditions.map((condition, index) => {
       return {
         assignmentWeight: (1 / conditions.length) * 100,
         conditionCode: condition,
+        twoCharacterId: `C${index}`,
       };
     }),
-    partitions: segmentDefinition.map(segmentInd => ({
+    partitions: segmentDefinition.map((segmentInd, index) => ({
       id: `${segmentInd.id}_${segmentInd.point}`,
       point: segmentInd.point,
       name: segmentInd.id,
       description: '',
+      twoCharacterId: `S${index}`,
     })),
   });
 
@@ -147,7 +221,6 @@ export async function getAllExperimentConditions_client(user: IUser) {
   const url = `${baseUrl}assign`;
   const postData = JSON.stringify({
     userId: user.id,
-    userEnvironment: user.group,
   });
 
   const result = await fetch(url, {
@@ -186,7 +259,6 @@ export async function markExperimentPoint_client(
     experimentId,
     experimentPoint,
     userId: user.id,
-    userEnvironment: user.group,
   });
 
   const url = `${baseUrl}mark`;

@@ -1,4 +1,9 @@
-import { Validation } from '../lib/index';
+import {
+  Validation,
+  init_client,
+  setGroupMembership_client,
+  setWorkingGroup_client,
+} from '../lib/index';
 import {
   getExperimentCondition_client,
   deleteExperiment_server,
@@ -19,9 +24,26 @@ import {
 } from 'ees_types';
 
 async function init() {
-  const user1 = defineUser_local('1', { class: '1' });
-  const user2 = defineUser_local('2', { class: '1' });
-  const user3 = defineUser_local('3', { class: '1' });
+  // creating user
+  await init_client('1');
+  await init_client('2');
+  await init_client('3');
+
+  // creating group
+  await setGroupMembership_client('1', {
+    class: ['1', '2'],
+  });
+  await setGroupMembership_client('2', {
+    class: ['1', '2'],
+  });
+  await setGroupMembership_client('3', {
+    class: ['1', '2'],
+  });
+
+  // creating working group
+  const user1 = await setWorkingGroup_client('1', { class: '1' });
+  const user2 = await setWorkingGroup_client('2', { class: '1' });
+  const user3 = await setWorkingGroup_client('3', { class: '1' });
 
   const experimentName = 'experiment1';
 
