@@ -2,7 +2,7 @@
 // setGroupMembership_client(userId, group)
 // setWorkingGroup_client(userId, workingGroup)
 // defineExperiment_server(name, [{id, point}], [conditions], unitOfAssignment, consistencyRule, postExperimentRule, group)
-// setExperimentStatus_server(name, state)
+// setExperimentStatus_server(name, status)
 // getAllExperimentConditions_client(user)
 // getExperimentCondition_client(experimentCondition, experimentPoint, experimentId)
 // markExperimentPoint_client(experimentPoint, experimentId, user)
@@ -28,7 +28,8 @@ export enum Validation {
   NotEqual = 'notEqual',
 }
 
-const baseUrl = `http://upgrade-development.us-east-1.elasticbeanstalk.com/api/`;
+// const baseUrl = `http://upgrade-development.us-east-1.elasticbeanstalk.com/api/`;
+const baseUrl = `http://localhost:3030/api/`;
 
 export async function init_client(
   userId: string,
@@ -166,20 +167,20 @@ async function getAllExperiment() {
 
 export async function setExperimentStatus_server(
   name: string,
-  state: EXPERIMENT_STATE
+  status: EXPERIMENT_STATE
 ) {
   // get all experiment
   const allExperiment = await getAllExperiment();
   const experiment: any = allExperiment.find(
     (experiment: any) => experiment.name === name
   );
-  const url = `${baseUrl}state`;
+  const url = `${baseUrl}experiments/state`;
   const postData = JSON.stringify({
     experimentId: experiment.id,
-    state,
+    state: status,
   });
   const result = await fetch(url, {
-    method: 'PUT',
+    method: 'POST',
     body: postData,
     headers: {
       'Content-Type': 'application/json',
@@ -243,7 +244,7 @@ export async function markExperimentPoint_client(
   user: IUser
 ) {
   const postData = JSON.stringify({
-    experimentId,
+    partitionId: experimentId,
     experimentPoint,
     userId: user.id,
   });

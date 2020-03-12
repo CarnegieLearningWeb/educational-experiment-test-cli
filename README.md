@@ -27,7 +27,7 @@ Node should be installed
 - **defineExperiment_server(name, [{id, point}], [conditions], unitOfAssignment, consistencyRule, postExperimentRule, group)** 
   Create new experiment  
   `defineExperiment_server("Experiment1", [{ id: 'W2', point: 'WorkSpace' }], ['A', 'B'], ASSIGNMENT_UNIT.INDIVIDUAL, CONSISTENCY_RULE.INDIVIDUAL, POST_EXPERIMENT_RULE.CONTINUE, 'class')`
-- **setExperimentStatus_server(name, state)**  
+- **setExperimentStatus_server(name, status)**  
   Change experiment status  
   `setExperimentStatus_server("Experiment1", EXPERIMENT_STATE.PREVIEW)`
 - **getAllExperimentConditions_client(userId)**  
