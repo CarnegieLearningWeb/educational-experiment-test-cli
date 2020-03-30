@@ -91,14 +91,14 @@ async function init() {
     user1.group.class[0],
     '1',
     Validation.Equal,
-    `[${experimentStateUpdate.state}] user3 group for class is changed to 2`
+    `[${experimentStateUpdate.state}] user1 group for class is changed to 2`
   );
 
   validate_local(
     user1.workingGroup.class,
     '1',
     Validation.Equal,
-    `[${experimentStateUpdate.state}] user3 working group for class is changed to 2`
+    `[${experimentStateUpdate.state}] user1 working group for class is changed to 2`
   );
 
   validate_local(

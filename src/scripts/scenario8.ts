@@ -112,7 +112,7 @@ async function init() {
     user1.workingGroup.class,
     '2',
     Validation.Equal,
-    `[${experimentStateUpdate.state}] user3 working group for class is changed to 2`
+    `[${experimentStateUpdate.state}] user1 working group for class is changed to 2`
   );
 
   user1Conditions = await getAllExperimentConditions_client(user1);
