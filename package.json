@@ -24,7 +24,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "ees_types": "CarnegieLearningWeb/educational-experiment-types#master",
+    "ees_types": "github:CarnegieLearningWeb/educational-experiment-types#master",
     "intercept-stdout": "^0.1.2",
     "node-fetch": "^2.6.0"
   }
