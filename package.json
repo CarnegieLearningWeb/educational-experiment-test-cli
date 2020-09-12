@@ -26,6 +26,6 @@
   "dependencies": {
     "ees_types": "github:CarnegieLearningWeb/educational-experiment-types#master",
     "intercept-stdout": "^0.1.2",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.1"
   }
 }
